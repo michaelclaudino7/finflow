@@ -1,0 +1,26 @@
+# Ingestão
+yfinance
+requests
+beautifulsoup4
+lxml
+
+# Banco de dados
+psycopg2-binary
+sqlalchemy
+
+# Validação
+pydantic
+python-dotenv
+
+# Análise
+pandas
+numpy
+matplotlib
+seaborn
+scipy
+jupyter
+
+# Utilitários
+loguru
+tenacity
+tqdm
