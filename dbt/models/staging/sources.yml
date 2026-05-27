@@ -1,0 +1,46 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Dados brutos ingeridos pelos scripts Python."
+    schema: raw
+    tables:
+
+      - name: precos_acoes
+        description: "Preços históricos diários de ações e índices (Yahoo Finance)."
+        columns:
+          - name: id
+            tests: [unique, not_null]
+          - name: ticker
+            tests: [not_null]
+          - name: data
+            tests: [not_null]
+          - name: fechamento
+            tests: [not_null]
+          - name: fechamento_aj
+            tests: [not_null]
+
+      - name: indicadores_macro
+        description: "Indicadores macroeconômicos: Selic, CDI, IPCA, câmbio (BCB/IBGE)."
+        columns:
+          - name: id
+            tests: [unique, not_null]
+          - name: data
+            tests: [not_null]
+          - name: indicador
+            tests: [not_null]
+          - name: valor
+            tests: [not_null]
+
+      - name: ativos
+        description: "Metadados dos ativos: setor, tipo, nome."
+        columns:
+          - name: id
+            tests: [unique, not_null]
+          - name: ticker
+            tests: [unique, not_null]
+          - name: tipo
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ["ACAO", "FII", "ETF", "INDICE"]

@@ -1,0 +1,56 @@
+version: 2
+
+models:
+
+  - name: stg_precos_acoes
+    description: "Preços históricos diários de ações limpos e padronizados."
+    columns:
+      - name: ticker
+        tests: [not_null]
+      - name: data
+        tests: [not_null]
+      - name: preco_ajustado
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      - name: preco_maxima
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= preco_minima"
+              where: "preco_maxima is not null and preco_minima is not null"
+
+  - name: stg_indicadores_macro
+    description: "Indicadores macroeconômicos padronizados com grupo e frequência."
+    columns:
+      - name: data
+        tests: [not_null]
+      - name: indicador
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - selic_meta
+                - selic_diaria
+                - usd_brl
+                - eur_brl
+                - igpm
+                - cdi
+                - pib_mensal
+                - ipca
+      - name: valor
+        tests: [not_null]
+      - name: grupo
+        tests:
+          - accepted_values:
+              values: [juros, inflacao, cambio, atividade, outro]
+
+  - name: stg_ativos
+    description: "Metadados dos ativos."
+    columns:
+      - name: ticker
+        tests: [unique, not_null]
+      - name: tipo
+        tests:
+          - accepted_values:
+              values: [ACAO, FII, ETF, INDICE]
