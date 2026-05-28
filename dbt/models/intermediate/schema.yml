@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: int_retornos_diarios
+    description: "Retornos diários calculados com lag por ticker."
+    columns:
+      - name: ticker
+        tests: [not_null]
+      - name: data
+        tests: [not_null]
+      - name: retorno_diario
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "between -0.9 and 10"
+              where: "retorno_diario is not null"
+
+  - name: int_indicadores_pivot
+    description: "Indicadores macro pivotados por data."
+    columns:
+      - name: data
+        tests: [not_null]
