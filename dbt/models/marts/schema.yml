@@ -1,0 +1,77 @@
+version: 2
+
+models:
+
+  - name: fact_precos
+    description: >
+      Tabela fato principal do FinFlow. Contém preços ajustados, retornos diários,
+      métricas de risco rolling (volatilidade, beta) e indicadores macro por dia.
+    columns:
+      - name: id
+        tests: [unique, not_null]
+      - name: ticker
+        tests: [not_null]
+      - name: data
+        tests: [not_null]
+      - name: preco_ajustado
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "> 0"
+      - name: retorno_diario
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "between -0.9 and 5.0"
+              where: "retorno_diario is not null"
+      - name: volatilidade_anual
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+              where: "volatilidade_anual is not null"
+
+  - name: dim_ativos
+    description: "Dimensão de ativos enriquecida com estatísticas históricas."
+    columns:
+      - name: id
+        tests: [unique, not_null]
+      - name: ticker
+        tests: [unique, not_null]
+      - name: tipo
+        tests:
+          - accepted_values:
+              values: [ACAO, FII, ETF, INDICE]
+      - name: perfil_risco
+        tests:
+          - accepted_values:
+              values: [baixo, medio, alto]
+
+  - name: mart_risco
+    description: "Métricas de risco anualizadas por ativo."
+    columns:
+      - name: id
+        tests: [unique, not_null]
+      - name: ticker
+        tests: [not_null]
+      - name: ano
+        tests: [not_null]
+      - name: win_rate_pct
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "between 0 and 100"
+              where: "win_rate_pct is not null"
+      - name: max_drawdown_pct
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "<= 0"
+              where: "max_drawdown_pct is not null"
+
+  - name: mart_correlacao
+    description: "Correlações anuais entre pares de ativos."
+    columns:
+      - name: id
+        tests: [unique, not_null]
+      - name: correlacao
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "between -1 and 1"
+              where: "correlacao is not null"
