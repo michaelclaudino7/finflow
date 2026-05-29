@@ -1,0 +1,70 @@
+{
+  "expectation_suite_name": "suite_indicadores_macro",
+  "expectations": [
+    {
+      "expectation_type": "expect_table_row_count_to_be_between",
+      "kwargs": { "min_value": 100, "max_value": null }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": { "column": "data" }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": { "column": "indicador" }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": { "column": "valor" }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "indicador",
+        "value_set": [
+          "selic_meta", "selic_diaria", "cdi",
+          "usd_brl", "eur_brl",
+          "ipca", "igpm",
+          "pib_mensal"
+        ]
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "valor",
+        "min_value": -50,
+        "max_value": 10000,
+        "mostly": 0.999
+      },
+      "meta": { "notes": "Valores macro devem estar em faixas razoáveis." }
+    },
+    {
+      "expectation_type": "expect_compound_columns_to_be_unique",
+      "kwargs": { "column_list": ["data", "indicador"] }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "fonte",
+        "value_set": ["bcb", "ibge", "manual"]
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "valor",
+        "min_value": -5,
+        "max_value": 100,
+        "row_condition": "indicador in ('ipca','igpm','selic_meta','selic_diaria','cdi')",
+        "condition_parser": "pandas",
+        "mostly": 0.999
+      },
+      "meta": { "notes": "Taxas de juros e inflação devem estar em faixas históricas." }
+    }
+  ],
+  "meta": {
+    "great_expectations_version": "0.18.12",
+    "created_by": "FinFlow"
+  }
+}

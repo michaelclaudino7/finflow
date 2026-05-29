@@ -1,0 +1,89 @@
+{
+  "expectation_suite_name": "suite_precos_acoes",
+  "expectations": [
+    {
+      "expectation_type": "expect_table_row_count_to_be_between",
+      "kwargs": { "min_value": 1000, "max_value": null },
+      "meta": { "notes": "A tabela deve ter pelo menos 1000 registros." }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": { "column": "ticker" }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": { "column": "data" }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": { "column": "fechamento_aj" }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "fechamento_aj",
+        "min_value": 0.01,
+        "max_value": 100000,
+        "mostly": 0.99
+      },
+      "meta": { "notes": "Preço ajustado deve ser positivo e razoável." }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "volume",
+        "min_value": 0,
+        "max_value": null,
+        "mostly": 0.95
+      }
+    },
+    {
+      "expectation_type": "expect_column_pair_values_a_to_be_greater_than_b",
+      "kwargs": {
+        "column_A": "maxima",
+        "column_B": "minima",
+        "or_equal": true,
+        "mostly": 0.999
+      },
+      "meta": { "notes": "Máxima >= mínima sempre." }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "fonte",
+        "value_set": ["yahoo_finance", "b3", "manual"]
+      }
+    },
+    {
+      "expectation_type": "expect_compound_columns_to_be_unique",
+      "kwargs": { "column_list": ["ticker", "data"] },
+      "meta": { "notes": "Combinação ticker+data deve ser única." }
+    },
+    {
+      "expectation_type": "expect_column_values_to_match_regex",
+      "kwargs": {
+        "column": "ticker",
+        "regex": "^[A-Z0-9^.]{3,10}$",
+        "mostly": 0.99
+      },
+      "meta": { "notes": "Ticker deve seguir formato padrão." }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_dateutil_parseable",
+      "kwargs": { "column": "data" }
+    },
+    {
+      "expectation_type": "expect_column_stdev_to_be_between",
+      "kwargs": {
+        "column": "fechamento_aj",
+        "min_value": 0.01,
+        "max_value": null
+      },
+      "meta": { "notes": "Deve haver variação nos preços (não pode ser constante)." }
+    }
+  ],
+  "meta": {
+    "great_expectations_version": "0.18.12",
+    "created_by": "FinFlow"
+  }
+}
